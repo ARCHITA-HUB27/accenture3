@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    // Add your build command here
+                    sh './gradlew assemble'
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                script {
+                    // Add your test command here
+                    sh './gradlew test'
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Archive test results and build artifacts
+            junit '**/build/test-results/**/*.xml'
+            archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
+        }
+    }
+}
